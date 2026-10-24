@@ -1,0 +1,32 @@
+# dsh-web-lan: LAN deployment for the dsh browser surface.
+#
+# Applied after the @deepseek-ai/dsh-web-app layer (this bundle is appended to
+# the end of the profile's dsh.profile.bundles), so it overrides that layer's
+# rows:
+#
+#   * webserver  - the whole config is restated with the bind host defaulting
+#     to 0.0.0.0 (the webserver schema accepts exactly 127.0.0.1 or
+#     0.0.0.0). A CLI --host still wins over this default. LAN clients need
+#     no extra trust config: the web-app glue samples the LAN authorities
+#     whenever the bind is all-interfaces.
+#
+#   * web-lan-token - a new row running this package's glue. When DSH_WEB_TOKEN
+#     (or a literal token in this row's config) is set, it fixes the
+#     connection service's launch token before the ready URL is printed, so
+#     the printed "dsh web:" line and the ?token= exchange use your value.
+#     Unset: upstream behavior (a random per-process token) is kept.
+
+- id: webserver
+  config:
+    host: !!js "ctx.webStartup.host ?? '0.0.0.0'"
+    port: !!js ctx.webStartup.port ?? 3080
+    compression: gzip
+    compressionLevel: 6
+    compressionThresholdBytes: 1024
+
+- insert:
+  - id: web-lan-token
+    name: 'dsh-web-lan'
+    inject: [connection]
+    config:
+      token: !!js "process.env.DSH_WEB_TOKEN"

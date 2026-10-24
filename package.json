@@ -1,0 +1,24 @@
+{
+  "name": "dsh-web-lan",
+  "description": "dsh web bundle: bind the browser surface to 0.0.0.0 (LAN / all interfaces) and fix the launch token via DSH_WEB_TOKEN or row config",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "cordis.patch.yml"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": [
+        "./cordis.patch.yml"
+      ]
+    }
+  }
+}
